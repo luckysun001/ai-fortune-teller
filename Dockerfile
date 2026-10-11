@@ -3,7 +3,7 @@
 # 生产级 AI 应用示例
 # ==========================================
 
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 LABEL maintainer="noreply@github.com"
 LABEL description="AI 算命大师 - 温暖有趣的 AI 命理解读"

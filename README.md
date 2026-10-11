@@ -8,7 +8,7 @@
 <p>
 <a href="https://github.com/luckysun001/ai-fortune-teller/actions/workflows/ci.yml"><img src="https://github.com/luckysun001/ai-fortune-teller/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="#"><img src="https://img.shields.io/badge/Status-Beta-F97316?style=for-the-badge" alt="Status"></a>
-<a href="#"><img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
+<a href="#"><img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
 <a href="#"><img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit"></a>
 </p>
 
@@ -145,7 +145,7 @@ ai-fortune-teller/
 
 ### 前置要求
 
-- Python 3.10+
+- Python 3.11+
 - OpenAI API Key（或其他兼容的大模型 API）
 
 ### 安装运行
