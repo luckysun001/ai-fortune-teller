@@ -6,6 +6,7 @@
 今日运势卡片 · 年度详细解读 · 两人合盘分析 · 精美分享图片
 
 <p>
+<a href="https://github.com/luckysun001/ai-fortune-teller/actions/workflows/ci.yml"><img src="https://github.com/luckysun001/ai-fortune-teller/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="#"><img src="https://img.shields.io/badge/Status-Beta-F97316?style=for-the-badge" alt="Status"></a>
 <a href="#"><img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
 <a href="#"><img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit"></a>
@@ -131,7 +132,9 @@ ai-fortune-teller/
 │
 └── tests/                      # 单元测试
     ├── __init__.py
-    └── test_core.py            # 核心逻辑测试
+    ├── test_core.py            # 核心逻辑测试
+    ├── test_fortune_v2.py      # v2 业务逻辑测试
+    └── test_share_image.py     # 分享图生成测试
 ```
 
 > **注意**：README 之前版本声称的 `backend/cache.py`、`backend/retry.py`、`backend/exceptions.py`、`frontend/`、`examples/`、`assets/` 目录均不存在。缓存、重试、异常处理逻辑已内置于 `fortune_teller_v2.py` 中。
@@ -244,6 +247,20 @@ pytest tests/ -v
 # 覆盖率
 pytest tests/ --cov=backend
 ```
+
+---
+
+## 🔗 相关项目
+
+本仓库是一个「**可直接跑起来的 LLM 应用样板**」——Prompt 工程、缓存、重试、内容安全一应俱全。
+
+如果你更关心「**Agent 与 RAG 这类工程架构**」，推荐作者的另外两个开源项目：
+
+> ### 🤖 [银行审计多智能体平台（bank-audit-agents）](https://github.com/luckysun001/bank-audit-agents)
+> 多 Agent 分工协作 + 编排器 + 审计流水线。
+>
+> ### 🔍 [银行审计 RAG 系统（audit-rag）](https://github.com/luckysun001/audit-rag)
+> 向量检索 + 生成，把知识库接进大模型。
 
 ---
 
