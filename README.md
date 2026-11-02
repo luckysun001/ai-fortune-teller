@@ -107,6 +107,7 @@ ai-fortune-teller/
 ├── .gitignore
 ├── Makefile                    # 常用命令封装
 ├── Dockerfile                  # Docker 容器配置
+├── pytest.ini                  # pytest 配置（固定测试发现范围为 tests/）
 ├── README.md
 ├── LICENSE
 │
@@ -134,7 +135,11 @@ ai-fortune-teller/
     ├── __init__.py
     ├── test_core.py            # 核心逻辑测试
     ├── test_fortune_v2.py      # v2 业务逻辑测试
-    └── test_share_image.py     # 分享图生成测试
+    ├── test_share_image.py     # 分享图生成测试（v2）
+    ├── test_utils_extra.py     # utils 补充测试（异常族/缓存/限流/随机）
+    ├── test_logger_module.py   # logger 测试（setup_logger/RequestLogger）
+    ├── test_share_image_legacy.py  # 分享图生成测试（v1）
+    └── test_cli.py             # CLI 参数解析与 mock 模式路径
 ```
 
 > **注意**：README 之前版本声称的 `backend/cache.py`、`backend/retry.py`、`backend/exceptions.py`、`frontend/`、`examples/`、`assets/` 目录均不存在。缓存、重试、异常处理逻辑已内置于 `fortune_teller_v2.py` 中。
@@ -266,7 +271,7 @@ pytest tests/ --cov=backend
 
 ## 📝 开发计划
 
-- [ ] 补充更多测试用例（share_image_v2、app.py 界面逻辑）
+- [x] 补充测试用例（utils/logger/share_image_v1/cli 均已覆盖；app.py 界面逻辑因 Streamlit 运行时依赖未单测；share_image_v2 已由 test_share_image.py 覆盖）
 - [ ] 支持更多模型（Claude、Gemini、通义千问、豆包）
 - [ ] 历史记录保存
 - [ ] 用户偏好学习
