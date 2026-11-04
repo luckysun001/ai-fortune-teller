@@ -1,26 +1,29 @@
+# 依赖约束策略：下限 >= + 上限 < 下一个破坏性版本（如 langchain>=0.1.0,<2.0.0）。
+# 上限取当前最新版的下一破坏性边界，保证今天 pip install 解析结果不变，
+# 仅阻止未来破坏性大版本（langchain 2.0 / transformers 6.0 等）无声升级导致项目失效。
 # ========== 核心依赖 ==========
 # AI 相关
-langchain>=0.1.0
-langchain-openai>=0.0.5
+langchain>=0.1.0,<2.0.0
+langchain-openai>=0.0.5,<2.0.0
 
 # Web 界面
-streamlit>=1.30.0
+streamlit>=1.30.0,<2.0.0
 
 # 工具
-python-dotenv>=1.0.0
+python-dotenv>=1.0.0,<2.0.0
 
 # 图片生成
-pillow>=10.0.0
+pillow>=10.0.0,<13.0.0
 
 # ========== 开发依赖 ==========
 # 测试
-pytest>=7.0.0
-pytest-cov>=4.0.0
+pytest>=7.0.0,<10.0.0
+pytest-cov>=4.0.0,<8.0.0
 
 # 代码质量
-black>=23.0.0
-flake8>=6.0.0
-mypy>=1.0.0
+black>=23.0.0,<27.0.0
+flake8>=6.0.0,<8.0.0
+mypy>=1.0.0,<3.0.0
 
 # 文档
-mkdocs>=1.5.0
+mkdocs>=1.5.0,<2.0.0
