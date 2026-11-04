@@ -36,3 +36,7 @@ cache/
 
 # WorkBuddy local data
 .workbuddy/
+
+# Coverage reports
+coverage.xml
+htmlcov/
