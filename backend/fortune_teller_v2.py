@@ -9,7 +9,7 @@ AI 运势预测核心类 - 优化版
 import os
 import time
 import datetime
-from typing import Dict, Optional, List
+from typing import Optional
 
 # 先尝试导入 LangChain，不可用也没关系
 LANGCHAIN_AVAILABLE = False

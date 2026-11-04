@@ -354,10 +354,10 @@ with tab4:
                 # 每条历史记录也有操作按钮
                 col1, col2 = st.columns(2)
                 with col1:
-                    if st.button(f"📋 复制", key=f"copy_{i}", use_container_width=True):
+                    if st.button("📋 复制", key=f"copy_{i}", use_container_width=True):
                         st.code(record["content"])
                 with col2:
-                    if SHARE_IMAGE_AVAILABLE and st.button(f"📷 生成图片", key=f"share_{i}", use_container_width=True):
+                    if SHARE_IMAGE_AVAILABLE and st.button("📷 生成图片", key=f"share_{i}", use_container_width=True):
                         with st.spinner("正在生成..."):
                             img_io = generate_share_image(
                                 title=f"✨ {record['type']}",

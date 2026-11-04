@@ -14,7 +14,6 @@
 import sys
 import os
 import argparse
-from typing import Optional
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
@@ -138,7 +137,7 @@ def main():
             sys.exit(1)
 
         if not args.quiet:
-            print(f"🔮 正在为你测算今日运势...")
+            print("🔮 正在为你测算今日运势...")
 
         result = teller.get_daily_fortune(args.birth)
 
@@ -154,7 +153,7 @@ def main():
             sys.exit(1)
 
         if not args.quiet:
-            print(f"🔮 正在为你详细解读... 约 10 秒")
+            print("🔮 正在为你详细解读... 约 10 秒")
 
         result = teller.get_fortune(args.birth, args.gender, args.direction)
 
@@ -170,7 +169,7 @@ def main():
             sys.exit(1)
 
         if not args.quiet:
-            print(f"🔮 正在分析你们的关系... 约 10 秒")
+            print("🔮 正在分析你们的关系... 约 10 秒")
 
         result = teller.get_relation_reading(
             args.name_a,

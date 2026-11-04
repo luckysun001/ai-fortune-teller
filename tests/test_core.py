@@ -16,7 +16,6 @@ import unittest
 from backend.config import validate_config, get_current_config
 from backend.utils import calculate_age, LRUCache, retry, ContentModerator
 from backend.fortune_teller import FortuneTeller
-from backend.logger import logger
 
 
 class TestConfig(unittest.TestCase):

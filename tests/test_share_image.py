@@ -29,7 +29,6 @@ from backend.share_image_v2 import (
     load_font,
     wrap_text,
     generate_share_image,
-    PIL_AVAILABLE as MODULE_PIL_AVAILABLE,
 )
 
 

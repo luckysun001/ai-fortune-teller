@@ -31,7 +31,6 @@ from .config import (
     MODEL_CONFIG,
     PROMPT_VERSIONS,
     SAFETY_CONFIG,
-    TEXTS,
 )
 from .logger import logger, request_logger
 from .utils import (
