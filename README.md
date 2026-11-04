@@ -253,6 +253,16 @@ pytest tests/ -v
 pytest tests/ --cov=backend
 ```
 
+### 持续集成 (CI)
+
+所有改动都经过 GitHub Actions 自动验证（`.github/workflows/ci.yml`）：
+
+- **触发条件**：`push` 与 `pull_request` 均覆盖 `main` 与 `dev` 分支
+- **运行环境**：Ubuntu，Python 3.11 / 3.12 双版本矩阵（`fail-fast: false`）
+- **验证内容**：`pip install -r requirements.txt` 后运行 `pytest`
+
+> **依赖版本约束**：`requirements.txt` 采用「下限 `>=` + 上限 `<` 下一个破坏性版本」的区间约束（如 `langchain>=0.1.0,<2.0.0`、`pillow>=10.0.0,<13.0.0`），保证今天解析结果不变、仅阻止未来破坏性大版本无声升级。
+
 ---
 
 ## 🔗 相关项目
