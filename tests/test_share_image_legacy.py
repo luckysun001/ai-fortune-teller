@@ -6,8 +6,8 @@ backend/share_image.py（v1 版）补充测试。
 该模块依赖 Pillow，无 Pillow 时 generate_share_image 返回 None。
 """
 
-import sys
 import os
+import sys
 import tempfile
 import unittest
 from io import BytesIO
@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     from PIL import Image
+
     PIL_AVAILABLE = True
 except ImportError:
     PIL_AVAILABLE = False

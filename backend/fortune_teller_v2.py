@@ -6,9 +6,9 @@ AI 运势预测核心类 - 优化版
 新增：重试、缓存、日志、错误处理、多模型支持
 """
 
+import datetime
 import os
 import time
-import datetime
 from typing import Optional
 
 # 先尝试导入 LangChain，不可用也没关系
@@ -18,8 +18,12 @@ HumanMessage = None
 SystemMessage = None
 
 try:
+    from langchain.schema import (  # noqa: F401  (optional-dependency probe)
+        HumanMessage,
+        SystemMessage,
+    )
     from langchain_openai import ChatOpenAI
-    from langchain.schema import HumanMessage, SystemMessage
+
     LANGCHAIN_AVAILABLE = True
 except ImportError:
     pass
@@ -27,12 +31,12 @@ except ImportError:
 from .config import MODEL_CONFIG, PROMPT_VERSIONS, SAFETY_CONFIG
 from .logger import logger, request_logger
 from .utils import (
+    APIKeyInvalidException,
+    APITimeoutException,
+    ContentSafetyException,
+    cached,
     retry,
     timing,
-    cached,
-    APITimeoutException,
-    APIKeyInvalidException,
-    ContentSafetyException,
 )
 
 
@@ -246,7 +250,6 @@ class FortuneTeller:
 
 祝你好运 🍀
             """.strip(),
-
             "daily": """
 ## ✨ 今日运势：中吉
 
@@ -272,7 +275,6 @@ class FortuneTeller:
 ✅ 今天不熬夜，12 点前睡觉
 ✅ 夸奖一个人（可以是自己）
             """.strip(),
-
             "relation": """
 ## 关系整体能量
 
@@ -394,6 +396,7 @@ class FortuneTeller:
     def get_stats(self) -> dict:
         """获取运行统计数据"""
         from .utils import cache
+
         return {
             "model_profile": self.model_profile,
             "model_config": self.config,
@@ -405,6 +408,7 @@ class FortuneTeller:
     def clear_cache(self):
         """清空缓存"""
         from .utils import cache
+
         cache.clear()
         logger.info("🗑️ 缓存已清空")
 
@@ -431,4 +435,5 @@ if __name__ == "__main__":
     print("📊 统计信息")
     print("=" * 80)
     import json
+
     print(json.dumps(teller.get_stats(), ensure_ascii=False, indent=2))

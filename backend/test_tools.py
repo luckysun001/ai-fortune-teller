@@ -7,12 +7,13 @@
 
 import os
 import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from backend.fortune_teller import FortuneTeller
 import json
 from datetime import datetime
 
+from backend.fortune_teller import FortuneTeller
 
 # 测试案例库 - 不同年龄、不同性别、不同方向
 TEST_CASES = [
@@ -81,11 +82,13 @@ def batch_test(api_key: str, model: str = "deepseek-chat", prompt_version: str =
         print(result)
 
         # 保存结果
-        results.append({
-            "case": case,
-            "result": result,
-            "timestamp": datetime.now().isoformat(),
-        })
+        results.append(
+            {
+                "case": case,
+                "result": result,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
     # 保存到文件
     output_file = f"test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"

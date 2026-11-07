@@ -6,8 +6,9 @@ cli.py 参数解析与 mock 模式基本路径测试。
 不传 API Key 时 FortuneTeller 进入 mock 模式，不会发起真实请求。
 """
 
-import sys
 import os
+import sys
+
 import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -32,7 +33,8 @@ def test_cli_daily_missing_birth(monkeypatch, capsys):
 
 def test_cli_daily_mock_mode(monkeypatch, capsys):
     monkeypatch.setattr(
-        sys, "argv",
+        sys,
+        "argv",
         ["cli.py", "--daily", "--birth", "1995-03-15", "--quiet"],
     )
     cli.main()  # mock 模式不应抛异常
@@ -42,7 +44,8 @@ def test_cli_daily_mock_mode(monkeypatch, capsys):
 
 def test_cli_fortune_mock_mode(monkeypatch, capsys):
     monkeypatch.setattr(
-        sys, "argv",
+        sys,
+        "argv",
         ["cli.py", "--fortune", "--birth", "1995-03-15", "--gender", "男", "--quiet"],
     )
     cli.main()
@@ -52,11 +55,19 @@ def test_cli_fortune_mock_mode(monkeypatch, capsys):
 
 def test_cli_relation_mock_mode(monkeypatch, capsys):
     monkeypatch.setattr(
-        sys, "argv",
+        sys,
+        "argv",
         [
-            "cli.py", "--relation",
-            "--name-a", "小明", "--birth-a", "1995-03-15",
-            "--name-b", "小红", "--birth-b", "1996-08-20",
+            "cli.py",
+            "--relation",
+            "--name-a",
+            "小明",
+            "--birth-a",
+            "1995-03-15",
+            "--name-b",
+            "小红",
+            "--birth-b",
+            "1996-08-20",
             "--quiet",
         ],
     )

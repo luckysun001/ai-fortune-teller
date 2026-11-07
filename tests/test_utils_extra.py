@@ -10,25 +10,26 @@ backend/utils.py 中尚未被覆盖的单元补充测试：
 - ContentModerator.check_input
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
+
 from backend.utils import (
-    FortuneException,
     APIKeyInvalidException,
     APITimeoutException,
-    ContentSafetyException,
-    RateLimitException,
     ConfigurationException,
-    timing,
-    cached,
-    RateLimiter,
-    random_choice_without_repeat,
     ContentModerator,
+    ContentSafetyException,
+    FortuneException,
+    RateLimiter,
+    RateLimitException,
     cache,
+    cached,
+    random_choice_without_repeat,
+    timing,
 )
 
 
@@ -118,7 +119,7 @@ def test_cached_distinct_args_not_shared():
     @cached
     def sq(x):
         calls.append(x)
-        return x ** 2
+        return x**2
 
     assert sq(2) == 4
     assert sq(3) == 9

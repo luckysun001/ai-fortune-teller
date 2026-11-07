@@ -9,7 +9,7 @@
 """
 
 import os
-from typing import Dict, Any
+from typing import Any, Dict
 
 # ========== 模型配置 ==========
 MODEL_CONFIG: Dict[str, Dict[str, Any]] = {
@@ -85,11 +85,25 @@ SAFETY_CONFIG: Dict[str, Any] = {
     "enable_moderation": os.getenv("SAFETY_MODERATION", "true").lower() == "true",
     "blocked_keywords": [
         # 医疗相关
-        "治病", "治疗", "药方", "偏方", "医院", "医生",
+        "治病",
+        "治疗",
+        "药方",
+        "偏方",
+        "医院",
+        "医生",
         # 投资相关
-        "股票", "基金", "理财", "投资", "赌博", "彩票",
+        "股票",
+        "基金",
+        "理财",
+        "投资",
+        "赌博",
+        "彩票",
         # 违法相关
-        "自杀", "自残", "暴力", "恐怖", "犯罪",
+        "自杀",
+        "自残",
+        "暴力",
+        "恐怖",
+        "犯罪",
         # 注: 政治敏感词请根据部署环境的法律法规要求，
         # 在 SAFETY_CONFIG 环境变量或外部配置文件中自行配置
     ],
@@ -134,15 +148,15 @@ def validate_config() -> bool:
             raise ValueError(
                 f"模型 {name} 的 temperature 必须在 0-2 之间，当前是 {config['temperature']}"
             )
-    
+
     # 校验缓存 TTL
     if CACHE_CONFIG["ttl_seconds"] < 0:
         raise ValueError("缓存 TTL 不能为负数")
-    
+
     # 校验缓存大小
     if CACHE_CONFIG["max_size"] < 1:
         raise ValueError("缓存大小必须大于 0")
-    
+
     return True
 
 
@@ -163,4 +177,5 @@ try:
     validate_config()
 except ValueError as e:
     import warnings
+
     warnings.warn(f"配置校验警告: {e}", RuntimeWarning)

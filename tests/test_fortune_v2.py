@@ -7,12 +7,13 @@ FortuneTeller v2 核心逻辑测试
 运行方法: python -m pytest tests/test_fortune_v2.py -v
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 import unittest
+
 from backend.fortune_teller_v2 import FortuneTeller
 
 
@@ -24,7 +25,9 @@ class TestFortuneTellerV2Init(unittest.TestCase):
 
     def test_mock_mode_no_api_key(self):
         """无 API Key 时应为 mock 模式"""
-        self.assertTrue(self.teller.mock_mode if hasattr(self.teller, 'mock_mode') else self.teller.llm is None)
+        self.assertTrue(
+            self.teller.mock_mode if hasattr(self.teller, "mock_mode") else self.teller.llm is None
+        )
 
     def test_prompts_loaded(self):
         """Prompt 模板应被加载"""
@@ -160,8 +163,10 @@ class TestFortuneTellerV2Methods(unittest.TestCase):
     def test_get_relation_reading(self):
         """合盘分析应返回有效结果"""
         result = self.teller.get_relation_reading(
-            "小明", "1995-03-15",
-            "小红", "1996-08-20",
+            "小明",
+            "1995-03-15",
+            "小红",
+            "1996-08-20",
             "情侣",
         )
         self.assertIsInstance(result, str)
@@ -169,7 +174,7 @@ class TestFortuneTellerV2Methods(unittest.TestCase):
 
     def test_health_check(self):
         """健康检查 — v2 可能没有此方法，跳过"""
-        if not hasattr(self.teller, 'health_check'):
+        if not hasattr(self.teller, "health_check"):
             self.skipTest("v2 FortuneTeller 无 health_check 方法")
         result = self.teller.health_check()
         self.assertIsInstance(result, tuple)

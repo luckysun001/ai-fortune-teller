@@ -13,7 +13,7 @@ AI 运势预测核心类 - v2.1 生产级版本
 
 import os
 import time
-from typing import Optional, Dict, Any, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 # 先尝试导入 LangChain
 LANGCHAIN_AVAILABLE = False
@@ -21,40 +21,37 @@ ChatOpenAI = None
 HumanMessage = None
 
 try:
-    from langchain_openai import ChatOpenAI
     from langchain.schema import HumanMessage
+    from langchain_openai import ChatOpenAI
+
     LANGCHAIN_AVAILABLE = True
 except ImportError:
     pass
 
-from .config import (
-    MODEL_CONFIG,
-    PROMPT_VERSIONS,
-    SAFETY_CONFIG,
-)
+from .config import MODEL_CONFIG, PROMPT_VERSIONS, SAFETY_CONFIG
 from .logger import logger, request_logger
 from .utils import (
-    retry,
-    timing,
-    cached,
-    calculate_age,
-    ContentModerator,
     APIKeyInvalidException,
     APITimeoutException,
+    ContentModerator,
     ContentSafetyException,
+    cached,
+    calculate_age,
+    retry,
+    timing,
 )
 
 
 class FortuneTeller:
     """
     AI 运势预测核心类
-    
+
     用法:
         >>> teller = FortuneTeller(api_key="your_key")
         >>> result = teller.get_fortune("1995-03-15", "男", "事业")
         >>> print(result)
     """
-    
+
     def __init__(
         self,
         api_key: Optional[str] = None,
@@ -63,36 +60,32 @@ class FortuneTeller:
     ):
         """
         初始化运势预测器
-        
+
         Args:
             api_key: API Key，如果不传会从环境变量读取
             model_profile: 模型配置名：default / gpt-3.5 / creative / conservative
             prompt_version: Prompt 版本：v1 / v2 / latest
         """
         # API Key 优先级：参数 > 环境变量
-        self.api_key = (
-            api_key
-            or os.getenv("DEEPSEEK_API_KEY")
-            or os.getenv("OPENAI_API_KEY")
-        )
-        
+        self.api_key = api_key or os.getenv("DEEPSEEK_API_KEY") or os.getenv("OPENAI_API_KEY")
+
         self.model_profile = model_profile
         self.prompt_version = prompt_version
         self.config = MODEL_CONFIG[model_profile]
-        
+
         # 初始化内容安全检查器
         self.moderator = ContentModerator(SAFETY_CONFIG["blocked_keywords"])
-        
+
         # 加载 Prompt 模板
         self.prompts: Dict[str, str] = {}
         self._load_prompts()
-        
+
         # 初始化 LLM 客户端
         self.llm = self._init_llm()
-        
+
         # 模拟模式（没有 API Key 时使用）
         self.mock_mode = self.llm is None
-        
+
         if self.mock_mode:
             logger.warning("⚠️  运行在模拟模式，使用内置的示例数据")
         else:
@@ -101,15 +94,15 @@ class FortuneTeller:
                 f"模型: {self.config['model']} | "
                 f"Prompt: {prompt_version}"
             )
-    
+
     def _load_prompts(self):
         """加载所有 Prompt 模板"""
         project_root = os.path.dirname(os.path.dirname(__file__))
-        
+
         for prompt_type, versions in PROMPT_VERSIONS.items():
             prompt_path = versions.get(self.prompt_version, versions["latest"])
             full_path = os.path.join(project_root, prompt_path)
-            
+
             if os.path.exists(full_path):
                 try:
                     with open(full_path, "r", encoding="utf-8") as f:
@@ -119,17 +112,17 @@ class FortuneTeller:
                     logger.error(f"❌ 加载 Prompt 失败 {prompt_path}: {e}")
             else:
                 logger.warning(f"⚠️  Prompt 文件不存在: {full_path}")
-    
+
     def _init_llm(self) -> Optional[Any]:
         """初始化 LLM 客户端"""
         if not LANGCHAIN_AVAILABLE:
             logger.debug("LangChain 未安装")
             return None
-        
+
         if not self.api_key:
             logger.debug("没有设置 API Key")
             return None
-        
+
         try:
             llm = ChatOpenAI(
                 model=self.config["model"],
@@ -139,28 +132,28 @@ class FortuneTeller:
                 max_tokens=self.config["max_tokens"],
                 timeout=self.config["timeout"],
             )
-            
+
             # 测试一下连接（可选）
             logger.debug(f"LLM 客户端初始化成功: {self.config['model']}")
             return llm
-            
+
         except Exception as e:
             logger.error(f"❌ 初始化 LLM 失败: {e}")
             return None
-    
+
     @retry(max_attempts=3, delay_seconds=1.0, backoff=2.0)
     @timing
     def _call_llm(self, prompt: str, request_type: str) -> str:
         """
         调用大模型（带重试和计时）
-        
+
         Args:
             prompt: 完整的 Prompt
             request_type: 请求类型，用于日志和统计
-        
+
         Returns:
             模型返回的内容
-        
+
         Raises:
             APIKeyInvalidException: API Key 无效
             APITimeoutException: 调用超时
@@ -170,7 +163,7 @@ class FortuneTeller:
         success = False
         error_msg: Optional[str] = None
         result: Optional[str] = None
-        
+
         try:
             # 模拟模式直接返回预设结果
             if self.mock_mode:
@@ -178,27 +171,27 @@ class FortuneTeller:
                 result = self._get_mock_result(request_type)
                 success = True
                 return result
-            
+
             # 真正调用 API
             if self.llm is None:
                 raise RuntimeError("LLM 未初始化")
-            
+
             messages = [HumanMessage(content=prompt)]
             response = self.llm.invoke(messages)
             result = response.content
-            
+
             # 内容安全检查
             if SAFETY_CONFIG["enable_moderation"]:
                 is_safe, reason = self.moderator.check_output(result)
                 if not is_safe:
                     raise ContentSafetyException(f"输出内容不安全: {reason}")
-            
+
             success = True
             return result
-            
+
         except Exception as e:
             error_msg = str(e)
-            
+
             # 判断异常类型，包装成我们的自定义异常
             error_str = str(e).lower()
             if "invalid" in error_str or "unauthorized" in error_str or "401" in error_str:
@@ -210,7 +203,7 @@ class FortuneTeller:
             else:
                 # 其他异常重新抛出
                 raise
-        
+
         finally:
             latency_ms = (time.perf_counter() - start_time) * 1000
             request_logger.log_request(
@@ -221,7 +214,7 @@ class FortuneTeller:
                 success=success,
                 error=error_msg,
             )
-    
+
     def _get_mock_result(self, request_type: str) -> str:
         """
         获取模拟结果（用于演示和测试）
@@ -253,7 +246,6 @@ class FortuneTeller:
 ✅ 今天不熬夜，12 点前睡觉
 ✅ 夸奖一个人（可以是自己）
             """.strip(),
-            
             "fortune": """
 ## 给你的第一印象
 
@@ -309,7 +301,6 @@ class FortuneTeller:
 
 祝你好运 🍀
             """.strip(),
-            
             "relation": """
 ## 关系整体能量
 
@@ -353,9 +344,9 @@ class FortuneTeller:
 好好珍惜彼此，祝你们越来越好 💕
             """.strip(),
         }
-        
+
         return mock_results.get(request_type, "（模拟结果）")
-    
+
     @cached
     def get_daily_fortune(
         self,
@@ -364,28 +355,29 @@ class FortuneTeller:
     ) -> str:
         """
         获取今日运势卡片
-        
+
         Args:
             birth_date: 出生日期，格式：YYYY-MM-DD
             today: 今天日期，不传则使用当前日期
-        
+
         Returns:
             今日运势的 Markdown 内容
         """
         from datetime import datetime
+
         if today is None:
             today = datetime.now().strftime("%Y-%m-%d")
-        
+
         age = calculate_age(birth_date)
         logger.info(f"📅 今日运势: {birth_date} ({age}岁) @ {today}")
-        
+
         prompt = self.prompts["daily"].format(
             birth_date=birth_date,
             today=today,
         )
-        
+
         return self._call_llm(prompt, request_type="daily")
-    
+
     @cached
     def get_fortune(
         self,
@@ -395,27 +387,27 @@ class FortuneTeller:
     ) -> str:
         """
         获取年度运势解读
-        
+
         Args:
             birth_date: 出生日期，格式：YYYY-MM-DD
             gender: 性别："男" / "女"
             direction: 测算方向："综合" / "事业" / "感情" / "财运" / "健康"
-        
+
         Returns:
             运势解读的 Markdown 内容
         """
         age = calculate_age(birth_date)
         logger.info(f"🔮 测算运势: {birth_date} ({age}岁) {gender} {direction}")
-        
+
         prompt = self.prompts["fortune"].format(
             birth_date=birth_date,
             gender=gender,
             direction=direction,
             age=age,
         )
-        
+
         return self._call_llm(prompt, request_type="fortune")
-    
+
     @cached
     def get_relation_reading(
         self,
@@ -427,19 +419,19 @@ class FortuneTeller:
     ) -> str:
         """
         两人合盘分析
-        
+
         Args:
             person_a: 第一个人的称呼
             birth_a: 第一个人的出生日期
             person_b: 第二个人的称呼
             birth_b: 第二个人的出生日期
             relation_type: 关系类型："情侣" / "夫妻" / "合伙人" / "朋友"
-        
+
         Returns:
             合盘分析的 Markdown 内容
         """
         logger.info(f"💑 合盘分析: {person_a} & {person_b} ({relation_type})")
-        
+
         prompt = self.prompts["relation"].format(
             person_a=person_a,
             birth_a=birth_a,
@@ -447,18 +439,18 @@ class FortuneTeller:
             birth_b=birth_b,
             relation_type=relation_type,
         )
-        
+
         return self._call_llm(prompt, request_type="relation")
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """
         获取运行统计数据
-        
+
         Returns:
             统计信息字典
         """
         from .utils import cache
-        
+
         return {
             "version": "2.1.0",
             "model_profile": self.model_profile,
@@ -468,24 +460,25 @@ class FortuneTeller:
             "requests": request_logger.get_stats(),
             "cache": cache.stats(),
         }
-    
+
     def clear_cache(self):
         """清空缓存"""
         from .utils import cache
+
         cache.clear()
-    
+
     def health_check(self) -> Tuple[bool, str]:
         """
         健康检查
-        
+
         Returns:
             (是否健康, 状态信息)
         """
         if self.mock_mode:
             return True, "运行在模拟模式"
-        
+
         if self.llm is None:
             return False, "LLM 客户端未初始化"
-        
+
         # 可以加一个简单的 ping 测试
         return True, "健康"

@@ -6,8 +6,8 @@
 运行方法: python -m pytest tests/test_share_image.py -v
 """
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
@@ -17,18 +17,19 @@ from io import BytesIO
 # 尝试导入 PIL
 try:
     from PIL import Image
+
     PIL_AVAILABLE = True
 except ImportError:
     PIL_AVAILABLE = False
 
 # 导入被测模块
 from backend.share_image_v2 import (
-    THEMES,
     QUOTES,
+    THEMES,
     create_gradient_background,
+    generate_share_image,
     load_font,
     wrap_text,
-    generate_share_image,
 )
 
 
@@ -51,7 +52,9 @@ class TestThemes(unittest.TestCase):
             self.assertIn("bg_gradient", theme, f"主题 {key} 缺少 bg_gradient")
             self.assertIn("text_color", theme, f"主题 {key} 缺少 text_color")
             self.assertIn("accent_color", theme, f"主题 {key} 缺少 accent_color")
-            self.assertEqual(len(theme["bg_gradient"]), 2, f"主题 {key} 的 bg_gradient 应有 2 个颜色")
+            self.assertEqual(
+                len(theme["bg_gradient"]), 2, f"主题 {key} 的 bg_gradient 应有 2 个颜色"
+            )
 
 
 class TestQuotes(unittest.TestCase):

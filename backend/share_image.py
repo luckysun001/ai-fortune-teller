@@ -6,8 +6,8 @@
 """
 
 import os
-from io import BytesIO
 from datetime import datetime
+from io import BytesIO
 
 
 def generate_share_image(content: str, title: str = "AI 运势预测") -> BytesIO:
@@ -86,7 +86,7 @@ def generate_share_image(content: str, title: str = "AI 运势预测") -> BytesI
             if len(line) > 45:
                 # 长句子换行
                 for i in range(0, len(line), 45):
-                    draw.text((PADDING, y), line[i:i+45], font=content_font, fill="#34495e")
+                    draw.text((PADDING, y), line[i : i + 45], font=content_font, fill="#34495e")
                     y += line_height
             else:
                 draw.text((PADDING, y), line, font=content_font, fill="#34495e")

@@ -88,11 +88,7 @@ class RequestLogger:
 
     def get_stats(self) -> dict:
         """获取统计数据"""
-        success_rate = (
-            self.success_count / self.request_count
-            if self.request_count > 0
-            else 0
-        )
+        success_rate = self.success_count / self.request_count if self.request_count > 0 else 0
         return {
             "total_requests": self.request_count,
             "success": self.success_count,

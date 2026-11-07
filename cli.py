@@ -11,9 +11,9 @@
     python cli.py --relation --name-a 小明 --birth-a 1995-03-15 --name-b 小红 --birth-b 1996-08-20
 """
 
-import sys
-import os
 import argparse
+import os
+import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
@@ -123,6 +123,7 @@ def main():
     # ========== 查看统计 ==========
     if args.stats:
         import json
+
         print("\n📊 运行统计")
         print("=" * 70)
         print(json.dumps(teller.get_stats(), ensure_ascii=False, indent=2))
@@ -201,5 +202,6 @@ if __name__ == "__main__":
     except Exception as e:
         logger.error(f"❌ 出错了: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

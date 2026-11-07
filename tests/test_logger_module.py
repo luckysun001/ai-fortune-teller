@@ -7,13 +7,13 @@ backend/logger.py 补充测试：
 - RequestLogger 请求计数与成功率统计
 """
 
-import sys
-import os
 import logging
+import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from backend.logger import setup_logger, RequestLogger
+from backend.logger import RequestLogger, setup_logger
 
 
 def test_setup_logger_returns_logger_with_level():
